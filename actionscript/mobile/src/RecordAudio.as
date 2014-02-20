@@ -26,19 +26,24 @@ package
 		}
 
 		/**
-		 * 开始录音，传入文件名称
+		 * Start Record
+		 * 
+		 * @savedName file name to save
+		 * @formate file formate to use, now only m4a
 		 */
-		public function startRecord(savedName:String):void
+		public function startRecord(savedName:String,format:String='.m4a'):void
 		{
-			saveName = savedName;
+			saveName = savedName+format;
 			if (extensionContext)
-				extensionContext.call('startRecord', savedName);
+				extensionContext.call('startRecord', savedName+format);
 		}
 		
 		private static var stopedCallback:Function;
 		
 		/**
-		 * 停止录音，返回保存音频文件的路径
+		 * Stop Record
+		 * 
+		 * @callback return recorded file's url
 		 */
 		public function stopRecord(callback:Function):void
 		{
@@ -49,19 +54,27 @@ package
 			}
 		}
 
-		public function toMp3():void
+		/**
+		 * Convert recorded audio to mp3
+		 * 
+		 * @callback return converted file's url
+		 */
+		public function toMp3(callback:Function):void
 		{
 			if (extensionContext)
+			{
+				stopedCallback = callback;
 				extensionContext.call('toMp3');	
+			}
 		}
 		
 		private static var saveName:String;
 		
 		protected static function onStatus(event:StatusEvent):void
-		{		
+		{
+			var url:String = event.level;
 			if(event.code == 'stoped' && stopedCallback)
 			{
-				var url:String = event.level;
 				if(url.indexOf('|') != -1)
 				{
 					trace('url has problem, auto fix');
@@ -70,6 +83,13 @@ package
 				}
 				trace('saved url: '+url);
 				stopedCallback(url);
+				stopedCallback = null;
+			}else if(event.code == 'mp3_converted' && stopedCallback)
+			{
+				var f:File = File.applicationDirectory;
+				url = f.nativePath.replace(f.name, '')+'tmp/temp.mp3';
+				stopedCallback(url);
+				stopedCallback=null;
 			}
 				
 		}

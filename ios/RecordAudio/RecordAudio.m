@@ -49,11 +49,11 @@ FREObject stopRecord(FREContext context, void* funcData, uint32_t argc, FREObjec
 }
 
 FREObject toMp3(FREContext context, void* funcData, uint32_t argc, FREObject argv[]){
-    NSLog(@"Call Start Function");
+    NSLog(@"Call to mp3");
     
     RecordController* rc = funcData;
     [rc toMp3];
-    
+
     return nil;
 }
 

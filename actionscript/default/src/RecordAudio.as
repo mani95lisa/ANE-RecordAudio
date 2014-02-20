@@ -18,20 +18,30 @@ package
 		}
 
 		/**
-		* 开始录音，传入文件名称
-		*/
-		public function startRecord(saveName:String):void
+		 * Start Record
+		 * 
+		 * @savedName file name to save
+		 * @formate file formate to use, now only m4a
+		 */
+		public function startRecord(saveName:String,format:String='m4a'):void
 		{
 		}
 
 		/**
-		 * 停止录音，返回保存音频文件的路径
+		 * Stop Record
+		 * 
+		 * @callback return recorded file's url
 		 */
 		public function stopRecord(callback:Function):void
 		{
 		}
 
-		public function toMp3():void
+		/**
+		 * Convert recorded audio to mp3
+		 * 
+		 * @callback return converted file's url
+		 */
+		public function toMp3(callback:Function):void
 		{
 		}
 

@@ -188,17 +188,23 @@
         const void *bytes = [someData bytes];
         //Easy way
         uint8_t *crypto_data = (uint8_t*)bytes;
+        
         FREDispatchStatusEventAsync(self.freContext, stoped, crypto_data);
     }
 }
 
 - (void) toMp3
 {
-    NSString *cafFilePath =[NSTemporaryDirectory() stringByAppendingString:_saveName];
+        NSLog(@"toMp3 %@", [_recordedFile path]);
+    NSString *cafFilePath =[_recordedFile path];
+//        NSString *cafFilePath =[NSTemporaryDirectory() stringByAppendingString:@"RecordedFile"];
+        NSLog(@"mp30");
+//    NSString *mp3FileName = _saveName;
+//    mp3FileName = [mp3FileName stringByAppendingString:@".mp3"];
+//    NSLog(@"mp31 %@", mp3FileName);
+    NSString *mp3FilePath = [NSTemporaryDirectory() stringByAppendingString:@"temp.mp3"];
     
-    NSString *mp3FileName = _saveName;
-    mp3FileName = [mp3FileName stringByAppendingString:@".mp3"];
-    NSString *mp3FilePath = [[NSHomeDirectory() stringByAppendingFormat:@"/Documents/"] stringByAppendingPathComponent:mp3FileName];
+    NSLog(@"mp31 %@", mp3FilePath);
     
     @try {
         int read, write;
@@ -211,12 +217,12 @@
         const int MP3_SIZE = 8192;
         short int pcm_buffer[PCM_SIZE*2];
         unsigned char mp3_buffer[MP3_SIZE];
-        
+            NSLog(@"mp32");
         lame_t lame = lame_init();
         lame_set_in_samplerate(lame, _sampleRate);
         lame_set_VBR(lame, vbr_default);
         lame_init_params(lame);
-        
+            NSLog(@"mp33");
         do {
             read = fread(pcm_buffer, 2*sizeof(short int), PCM_SIZE, pcm);
             if (read == 0)
@@ -231,9 +237,11 @@
         lame_close(lame);
         fclose(mp3);
         fclose(pcm);
+            NSLog(@"mp34");
     }
     @catch (NSException *exception) {
         NSLog(@"%@",[exception description]);
+            NSLog(@"mp35");
     }
     @finally {
         [self performSelectorOnMainThread:@selector(convertMp3Finish)
@@ -247,9 +255,15 @@
     [_startDate release];
     _hasMp3File = YES;
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-    NSInteger fileSize =  [self getFileSize:[NSHomeDirectory() stringByAppendingFormat:@"/Documents/%@", @"Mp3File.mp3"]];
-    NSString* fileString = [NSString stringWithFormat:@"%ld", fileSize/1024];
-    FREDispatchStatusEventAsync(self.freContext, mp3Converted, (uint8_t*)fileString);
+//    NSInteger fileSize =  [self getFileSize:[NSHomeDirectory() stringByAppendingFormat:@"/Documents/%@", @"Mp3File.mp3"]];
+//    NSString* fileString = [NSString stringWithFormat:@"%ld", fileSize/1024];
+//
+//    NSData *someData = [[_recordedFile path] dataUsingEncoding:NSUTF8StringEncoding];
+//    const void *bytes = [someData bytes];
+//    //Easy way
+//    uint8_t *crypto_data = (uint8_t*)bytes;
+    
+    FREDispatchStatusEventAsync(self.freContext, mp3Converted, mp3Converted);
 }
 
 @end
