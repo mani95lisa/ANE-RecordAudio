@@ -32,13 +32,14 @@
     NSTimer*                        _timer;
     NSDate*                         _startDate;
     NSString*                       _saveName;
+    NSString*                       _pureName;
 }
 
 @property ( nonatomic, assign ) FREContext      *freContext;
 
--(void) startRecord:(NSString*)saveName;
+-(void) startRecord:(NSString*)saveName index:(NSString*)index sampleRate:(NSString *)sampleRate;
 -(void) stopRecord;
 -(void) toMp3;
-
+-(void) toAmr;
 
 @end

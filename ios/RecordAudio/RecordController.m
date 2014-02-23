@@ -9,9 +9,11 @@
 #import "RecordController.h"
 #import <UIKit/UIKit.h>
 #import "FlashRuntimeExtensions.h"
+#import "amrFileCodec.h"
 
 #define recording (const uint8_t*)"recording"
 #define mp3Converted (const uint8_t*)"mp3_converted"
+#define amrConverted (const uint8_t*)"amrConverted"
 #define stoped (const uint8_t*)"stoped"
 
 @implementation RecordController
@@ -71,9 +73,9 @@
     }
 }
 
-- (void)startRecord:(NSString*) saveName
+- (void)startRecord:(NSString *)saveName index:(NSString *)index sampleRate:(NSString *)sampleRate
 {
-    NSLog(@"StartRecord");
+    NSLog(@"StartRecord1");
     
     if (!_recording)
     {
@@ -87,18 +89,52 @@
             NSLog(@"Error creating session: %@", [sessionError description]);
         else
             [session setActive:YES error:nil];
-        _sampleRate  = 44100;
+        NSInteger sr = [sampleRate intValue];
+        _sampleRate  = sr;
         _quality     = AVAudioQualityLow;
         _recording = _playing = _hasCAFFile = NO;
-        _formatIndex = [self formatIndexToEnum:4];
+        NSInteger findex = [index intValue];
+        NSLog(@"Record Format %ld", (long)findex);
+        _formatIndex = [self formatIndexToEnum:findex];
+        
+        NSMutableDictionary *settings = [[NSMutableDictionary alloc] init];
+        
+        [settings setObject:[NSNumber numberWithInt:_formatIndex] forKey:AVFormatIDKey];
+        [settings setObject:[NSNumber numberWithFloat:_sampleRate] forKey:AVSampleRateKey];
+        if(_sampleRate == 8000)
+        {
+            [settings setObject:[NSNumber numberWithInt:1] forKey:AVNumberOfChannelsKey];
+            [settings setObject:[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
+        }
+        [settings setObject:[NSNumber numberWithInt:_quality] forKey:AVEncoderAudioQualityKey];
+        
+//        _recordSetting = [[NSMutableDictionary alloc] init];
+//        [_recordSetting setObject:[NSNumber numberWithInt: kAudioFormatLinearPCM] forKey: AVFormatIDKey];
+//        // 2 设置采样率 采样率8000
+//        [_recordSetting setObject:[NSNumber numberWithFloat:8000.0] forKey: AVSampleRateKey];
+//        // 3 消息通道数目 目前只使用单通道进行录音
+//        [_recordSetting setObject:[NSNumber numberWithInt:1]forKey:AVNumberOfChannelsKey];
+//        // 4 采样位数 默认采用16BIT
+//        [_recordSetting setObject:[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
+//        // 设置录音源文件存放位置
+//        _filePath = [NSHomeDirectory() stringByAppendingPathComponent: @"Documents/recording.caf"];
+        
+//        NSInteger channel = _sampleRate == 8000 ? 1 : 2;
 
-        NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                  [NSNumber numberWithFloat: _sampleRate],                  AVSampleRateKey,
-                                  [NSNumber numberWithInt: _formatIndex],                   AVFormatIDKey,
-                                  [NSNumber numberWithInt: 2],                              AVNumberOfChannelsKey,
-                                  [NSNumber numberWithInt: _quality],                       AVEncoderAudioQualityKey,
-                                  nil];
+//        NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                  [NSNumber numberWithFloat: _sampleRate],                  AVSampleRateKey,
+//                                  [NSNumber numberWithInt: _formatIndex],                   AVFormatIDKey,
+//                                  [NSNumber numberWithInt: channel],                              AVNumberOfChannelsKey,
+//                                  [NSNumber numberWithInt: _quality],                       AVEncoderAudioQualityKey,
+//                                  nil];
+//        if(_sampleRate == 8000)
+//        {
+//            [settings dictionaryWithValuesForKeys:<#(NSArray *)#>]
+////            [settings setObject:[NSNumber numberWithInt:16] fork]
+//        }
+//        saveName = [saveName stringByAppendingString:@".m4a"];
         _saveName = saveName;
+
         _recordedFile = [[NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:saveName]]retain];
         NSError* error;
         _recorder = [[AVAudioRecorder alloc] initWithURL:_recordedFile settings:settings error:&error];
@@ -183,10 +219,9 @@
         [_recorder stop];
         [_recorder release];
         _recorder = nil;
-        NSData *someData = [[_recordedFile path] dataUsingEncoding:NSUTF8StringEncoding];
         
+        NSData *someData = [[_recordedFile path] dataUsingEncoding:NSUTF8StringEncoding];
         const void *bytes = [someData bytes];
-        //Easy way
         uint8_t *crypto_data = (uint8_t*)bytes;
         
         FREDispatchStatusEventAsync(self.freContext, stoped, crypto_data);
@@ -198,11 +233,16 @@
         NSLog(@"toMp3 %@", [_recordedFile path]);
     NSString *cafFilePath =[_recordedFile path];
 //        NSString *cafFilePath =[NSTemporaryDirectory() stringByAppendingString:@"RecordedFile"];
-        NSLog(@"mp30");
-//    NSString *mp3FileName = _saveName;
+    NSArray *parts = [[_recordedFile path] componentsSeparatedByString:@"/"];
+    NSString *filename = [parts objectAtIndex:[parts count]-1];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\..*" options:NSRegularExpressionCaseInsensitive error:Nil];
+    _pureName = [regex stringByReplacingMatchesInString:filename options:0 range:NSMakeRange(0, [filename length]) withTemplate:@""];
+
+        NSLog(@"mp30 %@", _pureName);
+    NSString *mp3FileName = [_pureName stringByAppendingString:@".mp3"];
 //    mp3FileName = [mp3FileName stringByAppendingString:@".mp3"];
 //    NSLog(@"mp31 %@", mp3FileName);
-    NSString *mp3FilePath = [NSTemporaryDirectory() stringByAppendingString:@"temp.mp3"];
+    NSString *mp3FilePath = [NSTemporaryDirectory() stringByAppendingString:mp3FileName];
     
     NSLog(@"mp31 %@", mp3FilePath);
     
@@ -248,6 +288,34 @@
                                withObject:nil
                             waitUntilDone:YES];
     }
+}
+
+- (void) toAmr
+{
+        NSString *cafFilePath =[_recordedFile path];
+    NSArray *parts = [[_recordedFile path] componentsSeparatedByString:@"/"];
+    NSString *filename = [parts objectAtIndex:[parts count]-1];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\..*" options:NSRegularExpressionCaseInsensitive error:Nil];
+    _pureName = [regex stringByReplacingMatchesInString:filename options:0 range:NSMakeRange(0, [filename length]) withTemplate:@""];
+        NSLog(@"toAmr1 %@", _pureName);
+    NSString *amrFileName = [_pureName stringByAppendingString:@".amr"];
+    NSString *amrFilePath = [NSTemporaryDirectory() stringByAppendingString:amrFileName];
+    NSLog(@"toAmr2 %@", amrFilePath);
+    // 获取一个当前时间的MD5值 作为一个唯一的标识
+//    NSString *_currentDate = [self transDateToFormatString:[NSDate date] withFormat:@"yyyyMMddhhmmss"];
+//    NSString *amrFileName = [self md5:_currentDate];
+//    NSString *filePath2 = [NSString stringWithFormat:@"%@/%@.amr", self.voiceCacheLib, amrFileName];
+    // 获取到录音源文件中的Data
+    NSData *cafData = [NSData dataWithContentsOfFile:cafFilePath];
+    // 打印录音源文件的总长度
+//    NSLog(@"音频源文件总长度 :%d \n", [cafData length]);
+    // 将data转换为AMR的格式
+    NSData *amrData = EncodeWAVEToAMR(cafData, 1, 16);
+    // 将amr数据data写入到文件中
+    [amrData writeToFile:amrFilePath atomically:YES];
+    // 打印转换后的AMR的长度
+//    NSLog(@"转换后的AMR文件总长度 :%d \n", [amrData length]);
+    FREDispatchStatusEventAsync(self.freContext, amrConverted, amrConverted);
 }
 
 - (void) convertMp3Finish

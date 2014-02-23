@@ -28,14 +28,51 @@ package
 		/**
 		 * Start Record
 		 * 
-		 * @savedName file name to save
-		 * @formate file formate to use, now only m4a
+		 * @savedName file name to save e.g. test.caf
+		 * @formateIndex file formate index to use: 
+		 * @sampleRate audio rate, default is 44100, for record voice is 8000
+		 *  
+		case 0: return kAudioFormatLinearPCM; break;
+        case 1: return kAudioFormatAC3; break;
+        case 2: return kAudioFormat60958AC3; break;
+        case 3: return kAudioFormatAppleIMA4; break;
+        case 4: return kAudioFormatMPEG4AAC; break;
+        case 5: return kAudioFormatMPEG4CELP; break;
+        case 6: return kAudioFormatMPEG4HVXC; break;
+        case 7: return kAudioFormatMPEG4TwinVQ; break;
+        case 8: return kAudioFormatMACE3; break;
+        case 9: return kAudioFormatMACE6; break;
+        case 10: return kAudioFormatULaw; break;
+        case 11: return kAudioFormatALaw; break;
+        case 12: return kAudioFormatQDesign; break;
+        case 13: return kAudioFormatQDesign2; break;
+        case 14: return kAudioFormatQUALCOMM; break;
+        case 15: return kAudioFormatMPEGLayer1; break;
+        case 16: return kAudioFormatMPEGLayer2; break;
+        case 17: return kAudioFormatMPEGLayer3; break;
+        case 18: return kAudioFormatTimeCode; break;
+        case 19: return kAudioFormatMIDIStream; break;
+        case 20: return kAudioFormatParameterValueStream; break;
+        case 21: return kAudioFormatAppleLossless; break;
+        case 22: return kAudioFormatMPEG4AAC_HE; break;
+        case 23: return kAudioFormatMPEG4AAC_LD; break;
+        case 24: return kAudioFormatMPEG4AAC_ELD; break;
+        case 25: return kAudioFormatMPEG4AAC_ELD_SBR; break;
+        case 26: return kAudioFormatMPEG4AAC_ELD_V2; break;
+        case 27: return kAudioFormatMPEG4AAC_HE_V2; break;
+        case 28: return kAudioFormatMPEG4AAC_Spatial; break;
+        case 29: return kAudioFormatAMR; break;
+        case 30: return kAudioFormatAudible; break;
+        case 31: return kAudioFormatiLBC; break;
+        case 32: return kAudioFormatDVIIntelIMA; break;
+        case 33: return kAudioFormatMicrosoftGSM; break;
+        case 34: return kAudioFormatAES3; break;
 		 */
-		public function startRecord(savedName:String,format:String='.m4a'):void
+		public function startRecord(savedName:String,formatIndex:int=0, sampleRate:int=8000):void
 		{
-			saveName = savedName+format;
+			saveName = savedName;
 			if (extensionContext)
-				extensionContext.call('startRecord', savedName+format);
+				extensionContext.call('startRecord', savedName, formatIndex.toString(), sampleRate.toString());
 		}
 		
 		private static var stopedCallback:Function;
@@ -67,27 +104,46 @@ package
 				extensionContext.call('toMp3');	
 			}
 		}
+
+		/**
+		 * Convert recorded audio to amr
+		 * 
+		 * @callback return converted file's url
+		 */
+		public function toAmr(callback:Function):void
+		{
+			if(extensionContext)
+			{
+				stopedCallback = callback;
+				extensionContext.call('toAmr');
+			}
+		}
 		
 		private static var saveName:String;
 		
 		protected static function onStatus(event:StatusEvent):void
 		{
 			var url:String = event.level;
+			var f:File = File.applicationDirectory;
+			var pureName:String = saveName.replace(/\..*/g, "");
 			if(event.code == 'stoped' && stopedCallback)
 			{
-				if(url.indexOf('|') != -1)
-				{
-					trace('url has problem, auto fix');
-					var f:File = File.applicationDirectory;
+//				if(url.indexOf('|') != -1)
+//				{
+//					trace('url has problem, auto fix');
 					url = f.nativePath.replace(f.name, '')+'tmp/'+saveName;
-				}
-				trace('saved url: '+url);
+//				}
+				trace('Saved: '+url);
 				stopedCallback(url);
 				stopedCallback = null;
 			}else if(event.code == 'mp3_converted' && stopedCallback)
 			{
-				var f:File = File.applicationDirectory;
-				url = f.nativePath.replace(f.name, '')+'tmp/temp.mp3';
+				
+				url = f.nativePath.replace(f.name, '')+'tmp/'+pureName+'.mp3';
+				stopedCallback(url);
+				stopedCallback=null;
+			}else if(event.code == 'amrConverted' && stopedCallback){
+				url = f.nativePath.replace(f.name, '')+'tmp/'+pureName+'.amr';
 				stopedCallback(url);
 				stopedCallback=null;
 			}

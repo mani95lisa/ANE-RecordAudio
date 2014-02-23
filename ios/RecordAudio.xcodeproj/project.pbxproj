@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		3C86524618B49CDC00096B14 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C86524518B49CDC00096B14 /* UIKit.framework */; };
+		3CB3142418B87E04000B900D /* amrFileCodec.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CB3141718B87E04000B900D /* amrFileCodec.m */; };
+		3CB3142518B87E04000B900D /* libopencore-amrnb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CB3141F18B87E04000B900D /* libopencore-amrnb.a */; };
+		3CB3142618B87E05000B900D /* libopencore-amrwb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CB3142018B87E04000B900D /* libopencore-amrwb.a */; };
+		3CB3142718B87E05000B900D /* PlayAMR.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CB3142318B87E04000B900D /* PlayAMR.m */; };
 		3CFA179818B4930900A2173E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CFA179718B4930900A2173E /* Foundation.framework */; };
 		3CFA179D18B4930900A2173E /* RecordAudio.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3CFA179C18B4930900A2173E /* RecordAudio.h */; };
 		3CFA179F18B4930900A2173E /* RecordAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CFA179E18B4930900A2173E /* RecordAudio.m */; };
@@ -48,6 +52,16 @@
 
 /* Begin PBXFileReference section */
 		3C86524518B49CDC00096B14 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3CB3141618B87E04000B900D /* amrFileCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = amrFileCodec.h; path = ../../../AudioConverter/AudioConverter/DPRecorder/amrFileCodec.h; sourceTree = "<group>"; };
+		3CB3141718B87E04000B900D /* amrFileCodec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = amrFileCodec.m; path = ../../../AudioConverter/AudioConverter/DPRecorder/amrFileCodec.m; sourceTree = "<group>"; };
+		3CB3141A18B87E04000B900D /* interf_dec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interf_dec.h; sourceTree = "<group>"; };
+		3CB3141B18B87E04000B900D /* interf_enc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interf_enc.h; sourceTree = "<group>"; };
+		3CB3141D18B87E04000B900D /* dec_if.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dec_if.h; sourceTree = "<group>"; };
+		3CB3141E18B87E04000B900D /* if_rom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = if_rom.h; sourceTree = "<group>"; };
+		3CB3141F18B87E04000B900D /* libopencore-amrnb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libopencore-amrnb.a"; path = "../../../AudioConverter/AudioConverter/DPRecorder/libopencore-amrnb.a"; sourceTree = "<group>"; };
+		3CB3142018B87E04000B900D /* libopencore-amrwb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libopencore-amrwb.a"; path = "../../../AudioConverter/AudioConverter/DPRecorder/libopencore-amrwb.a"; sourceTree = "<group>"; };
+		3CB3142218B87E04000B900D /* PlayAMR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayAMR.h; sourceTree = "<group>"; };
+		3CB3142318B87E04000B900D /* PlayAMR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayAMR.m; sourceTree = "<group>"; };
 		3CFA179418B4930900A2173E /* libRecordAudio.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRecordAudio.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CFA179718B4930900A2173E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		3CFA179B18B4930900A2173E /* RecordAudio-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecordAudio-Prefix.pch"; sourceTree = "<group>"; };
@@ -74,9 +88,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C86524618B49CDC00096B14 /* UIKit.framework in Frameworks */,
+				3CB3142518B87E04000B900D /* libopencore-amrnb.a in Frameworks */,
 				3CFA17C418B4967E00A2173E /* AudioToolbox.framework in Frameworks */,
 				3CFA17C218B4967200A2173E /* AVFoundation.framework in Frameworks */,
 				3CFA179818B4930900A2173E /* Foundation.framework in Frameworks */,
+				3CB3142618B87E05000B900D /* libopencore-amrwb.a in Frameworks */,
 				3CFA17C018B4958800A2173E /* libmp3lame.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,6 +111,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3CB3141818B87E04000B900D /* include */ = {
+			isa = PBXGroup;
+			children = (
+				3CB3141918B87E04000B900D /* opencore-amrnb */,
+				3CB3141C18B87E04000B900D /* opencore-amrwb */,
+			);
+			name = include;
+			path = ../../../AudioConverter/AudioConverter/DPRecorder/include;
+			sourceTree = "<group>";
+		};
+		3CB3141918B87E04000B900D /* opencore-amrnb */ = {
+			isa = PBXGroup;
+			children = (
+				3CB3141A18B87E04000B900D /* interf_dec.h */,
+				3CB3141B18B87E04000B900D /* interf_enc.h */,
+			);
+			path = "opencore-amrnb";
+			sourceTree = "<group>";
+		};
+		3CB3141C18B87E04000B900D /* opencore-amrwb */ = {
+			isa = PBXGroup;
+			children = (
+				3CB3141D18B87E04000B900D /* dec_if.h */,
+				3CB3141E18B87E04000B900D /* if_rom.h */,
+			);
+			path = "opencore-amrwb";
+			sourceTree = "<group>";
+		};
+		3CB3142118B87E04000B900D /* PlayAMR */ = {
+			isa = PBXGroup;
+			children = (
+				3CB3142218B87E04000B900D /* PlayAMR.h */,
+				3CB3142318B87E04000B900D /* PlayAMR.m */,
+			);
+			name = PlayAMR;
+			path = ../../../AudioConverter/AudioConverter/DPRecorder/PlayAMR;
+			sourceTree = "<group>";
+		};
 		3CFA178B18B4930900A2173E = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +184,12 @@
 		3CFA179918B4930900A2173E /* RecordAudio */ = {
 			isa = PBXGroup;
 			children = (
+				3CB3141618B87E04000B900D /* amrFileCodec.h */,
+				3CB3141718B87E04000B900D /* amrFileCodec.m */,
+				3CB3141818B87E04000B900D /* include */,
+				3CB3141F18B87E04000B900D /* libopencore-amrnb.a */,
+				3CB3142018B87E04000B900D /* libopencore-amrwb.a */,
+				3CB3142118B87E04000B900D /* PlayAMR */,
 				3CFA17BE18B4958800A2173E /* lame.h */,
 				3CFA17BF18B4958800A2173E /* libmp3lame.a */,
 				3CFA17BD18B493DE00A2173E /* FlashRuntimeExtensions.h */,
@@ -251,6 +311,8 @@
 			files = (
 				3CFA17C718B499F100A2173E /* RecordController.m in Sources */,
 				3CFA179F18B4930900A2173E /* RecordAudio.m in Sources */,
+				3CB3142718B87E05000B900D /* PlayAMR.m in Sources */,
+				3CB3142418B87E04000B900D /* amrFileCodec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,6 +426,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/mani/pamakids/ane/ANE-RecordAudio/ios/RecordAudio",
+					/Users/mani/pamakids/ane/AudioConverter/AudioConverter/DPRecorder,
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -381,6 +444,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/mani/pamakids/ane/ANE-RecordAudio/ios/RecordAudio",
+					/Users/mani/pamakids/ane/AudioConverter/AudioConverter/DPRecorder,
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
