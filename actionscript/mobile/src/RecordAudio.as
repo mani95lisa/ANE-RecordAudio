@@ -119,6 +119,35 @@ package
 			}
 		}
 		
+		/**
+		 * Play AMR file
+		 * 
+		 * @path amr file path
+		 * @volume amr player volume
+		 * @playCompletedCallback call after amr file play completed
+		 * 
+		 * @callback return converted file's url
+		 */
+		public function playAmr(path:String, volume:Number = 1.0, playCompletedCallback:Function=null):void
+		{
+			if(extensionContext)
+			{
+				stopedCallback = playCompletedCallback;
+				extensionContext.call('playAmr', path, volume.toString());
+			}
+		}
+		
+		/**
+		 * stop play amr
+		 */
+		public function stopAmr():void
+		{
+			if(extensionContext)
+			{
+				extensionContext.call('stopAmr');
+			}
+		}
+		
 		private static var saveName:String;
 		
 		protected static function onStatus(event:StatusEvent):void
@@ -145,6 +174,9 @@ package
 			}else if(event.code == 'amrConverted' && stopedCallback){
 				url = f.nativePath.replace(f.name, '')+'tmp/'+pureName+'.amr';
 				stopedCallback(url);
+				stopedCallback=null;
+			}else if(event.code == 'amrPlayCompleted' && stopedCallback){
+				stopedCallback();
 				stopedCallback=null;
 			}
 				

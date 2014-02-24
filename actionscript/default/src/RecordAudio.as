@@ -90,6 +90,27 @@ package
 		public function toAmr(callback:Function):void
 		{
 		}
+		
+		/**
+		 * Play AMR file
+		 * 
+		 * @path amr file path
+		 * @volume amr player volume
+		 * @playCompletedCallback call after amr file play completed
+		 * 
+		 * @callback return converted file's url
+		 */
+		public function playAmr(path:String, volume:Number = 1.0, playCompletedCallback:Function=null):void
+		{
+		}
+		
+		/**
+		 * stop play amr
+		 */
+		public function stopAmr():void
+		{
+			
+		}
 
 	}
 

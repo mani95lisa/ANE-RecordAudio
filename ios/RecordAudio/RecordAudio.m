@@ -81,9 +81,46 @@ FREObject toAmr(FREContext context, void* funcData, uint32_t argc, FREObject arg
     return nil;
 }
 
+FREObject stopAmr(FREContext context, void* funcData, uint32_t argc, FREObject argv[]){
+    NSLog(@"stop Amr");
+    
+    PlayAMR* pa = funcData;
+    [pa stopCurrentPlayAMRFile];
+    
+    return nil;
+}
+
+FREObject playAmr(FREContext context, void* funcData, uint32_t argc, FREObject argv[]){
+    uint32_t stringLength;
+    const uint8_t* path;
+    NSString *pathString = nil;
+    
+    const uint8_t* volume;
+    NSString *volumeString = nil;
+    
+    
+    if(argv[0] && (FREGetObjectAsUTF8(argv[0], &stringLength, &path) == FRE_OK)){
+        pathString = [NSString stringWithUTF8String:(char*)path];
+    }
+    
+    if(argv[1] && (FREGetObjectAsUTF8(argv[1], &stringLength, &volume) == FRE_OK)){
+        volumeString= [NSString stringWithUTF8String:(char*)volume];
+    }
+    
+    if(!volumeString)
+        volumeString = @"1.0";
+    
+    NSLog(@"Call to playAmr %@, %@", pathString, volumeString);
+    
+    PlayAMR* pa = funcData;
+    [pa playAMR:pathString volume:[volumeString floatValue]];
+    
+    return nil;
+}
+
 void RecordAudioContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToTest,
                                    const FRENamedFunction** functionsToSet){
-    uint numOfFun = 4;
+    uint numOfFun = 6;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * numOfFun);
     *numFunctionsToTest = numOfFun;
@@ -107,6 +144,16 @@ void RecordAudioContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     func[3].name = (const uint8_t*) "toAmr";
     func[3].functionData = rc;
     func[3].function = &toAmr;
+    
+    PlayAMR* pa = [PlayAMR alloc];
+    
+    func[4].name = (const uint8_t*) "playAmr";
+    func[4].functionData = pa;
+    func[4].function = &playAmr;
+    
+    func[5].name = (const uint8_t*) "stopAmr";
+    func[5].functionData = pa;
+    func[5].function = &stopAmr;
     
     *functionsToSet = func;
     

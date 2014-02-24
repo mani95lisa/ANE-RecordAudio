@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "FlashRuntimeExtensions.h"
 #import "amrFileCodec.h"
+#import "PlayAMR.h"
 
 #define recording (const uint8_t*)"recording"
 #define mp3Converted (const uint8_t*)"mp3_converted"
