@@ -2,7 +2,7 @@ ANE-RecordAudio
 ===============
 
 ANE Record and Convert Audio in many formates
-```
+```actionscript
 //Demo
 setTimeout(function():void{
 	trace('Begin');
