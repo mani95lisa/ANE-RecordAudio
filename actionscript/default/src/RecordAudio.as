@@ -111,6 +111,11 @@ package
 		{
 			
 		}
+		public function addto(a:uint):uint
+		{
+			return 222
+		}
+
 
 	}
 

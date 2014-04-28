@@ -148,6 +148,15 @@ package
 			}
 		}
 		
+		public function addto(a:uint):uint
+		{
+			if(extensionContext)
+			{
+				return uint(extensionContext.call('addto',a));
+			}
+			return 1000
+		}
+		
 		private static var saveName:String;
 		
 		protected static function onStatus(event:StatusEvent):void

@@ -6,7 +6,7 @@
 
     <!-- All -->
     <!-- <target name="all" depends="android,ios,ios-simulator,swc-mobile,swc-default,package" description="Full build of extension"/> -->
-    <target name="all" depends="ios,swc-mobile,swc-default,package" description="Full build of extension"/>
+    <target name="all" depends="ios,swc-mobile,package" description="Full build of extension"/>
     <!-- <target name="ios" depends="ios,ios-simulator,android,swc-mobile,swc-default,package" description="Full build of extension"/> -->
     <!-- <target name="all" depends="android" description="Full build of extension"/> -->
 
@@ -121,6 +121,7 @@
         <copy file="../temp/swc/content/library.swf" todir="../temp/ios" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/ios-simulator" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/android" overwrite="true"/>
+        <copy file="../temp/swc/content/library.swf" todir="../temp/default" overwrite="true"/>
         <!-- <delete dir="../temp/swc/content/"/> -->
     </target>
 
