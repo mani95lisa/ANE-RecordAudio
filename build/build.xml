@@ -121,6 +121,7 @@
         <copy file="../temp/swc/content/library.swf" todir="../temp/ios" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/ios-simulator" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/android" overwrite="true"/>
+        <copy file="../temp/swc/content/library.swf" todir="../temp/default" overwrite="true"/>
         <!-- <delete dir="../temp/swc/content/"/> -->
     </target>
 

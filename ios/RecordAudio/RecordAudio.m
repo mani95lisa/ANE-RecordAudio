@@ -118,6 +118,7 @@ FREObject playAmr(FREContext context, void* funcData, uint32_t argc, FREObject a
     return nil;
 }
 
+
 void RecordAudioContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToTest,
                                    const FRENamedFunction** functionsToSet){
     uint numOfFun = 6;
@@ -146,6 +147,8 @@ void RecordAudioContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     func[3].function = &toAmr;
     
     PlayAMR* pa = [PlayAMR alloc];
+    pa.freContext = ctx;
+
     
     func[4].name = (const uint8_t*) "playAmr";
     func[4].functionData = pa;
@@ -154,6 +157,8 @@ void RecordAudioContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     func[5].name = (const uint8_t*) "stopAmr";
     func[5].functionData = pa;
     func[5].function = &stopAmr;
+
+    
     
     *functionsToSet = func;
     

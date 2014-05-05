@@ -4,6 +4,7 @@ package
 	import flash.events.StatusEvent;
 	import flash.external.ExtensionContext;
 	import flash.filesystem.File;
+	import flash.utils.Dictionary;
 
 	public class RecordAudio extends EventDispatcher
 	{
@@ -75,7 +76,7 @@ package
 				extensionContext.call('startRecord', savedName, formatIndex.toString(), sampleRate.toString());
 		}
 		
-		private static var stopedCallback:Function;
+		private static const stopedCallback:Dictionary = new Dictionary;;
 		
 		/**
 		 * Stop Record
@@ -86,7 +87,7 @@ package
 		{
 			if (extensionContext)
 			{
-				stopedCallback = callback;
+				stopedCallback["stopRecord"] = callback;
 				extensionContext.call('stopRecord');	
 			}
 		}
@@ -100,7 +101,7 @@ package
 		{
 			if (extensionContext)
 			{
-				stopedCallback = callback;
+				stopedCallback["toMp3"] = callback;
 				extensionContext.call('toMp3');	
 			}
 		}
@@ -114,7 +115,7 @@ package
 		{
 			if(extensionContext)
 			{
-				stopedCallback = callback;
+				stopedCallback["toAmr"] = callback;
 				extensionContext.call('toAmr');
 			}
 		}
@@ -132,7 +133,7 @@ package
 		{
 			if(extensionContext)
 			{
-				stopedCallback = playCompletedCallback;
+				stopedCallback["playAmr"] = playCompletedCallback;
 				extensionContext.call('playAmr', path, volume.toString());
 			}
 		}
@@ -155,7 +156,7 @@ package
 			var url:String = event.level;
 			var f:File = File.applicationDirectory;
 			var pureName:String = saveName.replace(/\..*/g, "");
-			if(event.code == 'stoped' && stopedCallback)
+			if(event.code == 'stoped' && stopedCallback["stopRecord"])
 			{
 //				if(url.indexOf('|') != -1)
 //				{
@@ -163,21 +164,21 @@ package
 					url = f.nativePath.replace(f.name, '')+'tmp/'+saveName;
 //				}
 				trace('Saved: '+url);
-				stopedCallback(url);
-				stopedCallback = null;
-			}else if(event.code == 'mp3_converted' && stopedCallback)
+				stopedCallback["stopRecord"](url);
+				stopedCallback["stopRecord"] = null;
+			}else if(event.code == 'mp3_converted' && stopedCallback["toMp3"])
 			{
 				
 				url = f.nativePath.replace(f.name, '')+'tmp/'+pureName+'.mp3';
-				stopedCallback(url);
-				stopedCallback=null;
-			}else if(event.code == 'amrConverted' && stopedCallback){
+				stopedCallback["toMp3"](url);
+				stopedCallback["toMp3"]=null;
+			}else if(event.code == 'amrConverted' && stopedCallback["toAmr"]){
 				url = f.nativePath.replace(f.name, '')+'tmp/'+pureName+'.amr';
-				stopedCallback(url);
-				stopedCallback=null;
-			}else if(event.code == 'amrPlayCompleted' && stopedCallback){
-				stopedCallback();
-				stopedCallback=null;
+				stopedCallback["toAmr"](url);
+				stopedCallback["toAmr"]=null;
+			}else if(event.code == 'amrPlayCompleted' && stopedCallback["playAmr"]){
+				stopedCallback["playAmr"]();
+				stopedCallback["playAmr"]=null;
 			}
 				
 		}

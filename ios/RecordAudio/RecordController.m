@@ -309,14 +309,20 @@
     // 获取到录音源文件中的Data
     NSData *cafData = [NSData dataWithContentsOfFile:cafFilePath];
     // 打印录音源文件的总长度
-//    NSLog(@"音频源文件总长度 :%d \n", [cafData length]);
+    //NSLog(@"音频源文件总长度 :%d \n", [cafData length]);
+      //NSLog(@"toAmr3 %@", cafData.debugDescription);
     // 将data转换为AMR的格式
     NSData *amrData = EncodeWAVEToAMR(cafData, 1, 16);
     // 将amr数据data写入到文件中
-    [amrData writeToFile:amrFilePath atomically:YES];
+    //NSLog(@"toAmr4 %@", amrData.debugDescription);
+    BOOL writeBool = [amrData writeToFile:amrFilePath atomically:YES];
     // 打印转换后的AMR的长度
-//    NSLog(@"转换后的AMR文件总长度 :%d \n", [amrData length]);
+    //NSLog(@"转换后的AMR文件总长度 :%d \n", [amrData length]);
+
+    //FREResult result =
     FREDispatchStatusEventAsync(self.freContext, amrConverted, amrConverted);
+    
+   // NSLog(@"toAmr5 %d %d", writeBool,result);
 }
 
 - (void) convertMp3Finish
