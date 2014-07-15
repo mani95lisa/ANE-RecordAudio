@@ -27,6 +27,7 @@ setTimeout(function():void{
 	RecordAudio.instance.toAMR(function(url):void{
 		var f:File = new File(url);
 		trace(f.exists, url);
+		RecordAudio.playAmr(url, volume, callback);
 	});
 }, 8000);
 ```
